@@ -1,17 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import products from "./products.jsx";
-import { Check } from 'lucide-react';
+import { Check, X } from 'lucide-react';
 import './Home.css';
 
 const ProductPage = () => {
     const [sidebarVisible, setSidebarVisible] = useState(false);
-    const [filteredProducts, setFilteredProducts] = useState([]);
+    const [filteredProducts, setFilteredProducts] = useState([]);   
     const [displayedProducts, setDisplayedProducts] = useState([]);
     const [selectedFilters, setSelectedFilters] = useState({ categories: [], priceRanges: [] });
     const [loading, setLoading] = useState(true);
     const [savedProducts, setSavedProducts] = useState([]);
     const [showingSaved, setShowingSaved] = useState(false);
     const [notification, setNotification] = useState(null);
+    const [showBudgetPopup, setShowBudgetPopup] = useState(true);
+    const [budget, setBudget] = useState(20000);
+    const [isPopupLoading, setIsPopupLoading] = useState(true);
 
     const categories = ['Smartphones', 'Laptops', 'Headphones', 'TVs', 'Wearables'];
     const priceRanges = [
@@ -27,6 +30,11 @@ const ProductPage = () => {
         setSavedProducts(savedProductsFromStorage);
         const showingSavedFromStorage = JSON.parse(localStorage.getItem('showingSaved') || 'false');
         setShowingSaved(showingSavedFromStorage);
+
+        // Simulate loading time for the popup
+        setTimeout(() => {
+            setIsPopupLoading(false);
+        }, 1000);
     }, []);
 
     useEffect(() => {
@@ -107,6 +115,25 @@ const ProductPage = () => {
         return savedProducts.some(p => p.name === product.name);
     };
 
+    const handleBudgetChange = (e) => {
+        setBudget(e.target.value);
+    };
+
+    const applyBudget = () => {
+        const selectedRange = priceRanges.find(range => budget <= range.max);
+        if (selectedRange) {
+            setSelectedFilters(prev => ({
+                ...prev,
+                priceRanges: [selectedRange]
+            }));
+        }
+        setShowBudgetPopup(false);
+    };
+
+    const closeBudgetPopup = () => {
+        setShowBudgetPopup(false);
+    };
+
     return (
         <div className={`product-page ${sidebarVisible ? 'sidebar-open' : ''}`}>
             {notification && (
@@ -115,6 +142,59 @@ const ProductPage = () => {
                     <span>{notification}</span>
                 </div>
             )}
+{showBudgetPopup && (
+    <div className="budget-popup">
+        <button className={`close-popup ${isPopupLoading ? 'skeleton' : ''}`} onClick={closeBudgetPopup}>
+            {!isPopupLoading && <X size={24} />}
+        </button>
+        {isPopupLoading ? (
+            <div className="skeleton-content">
+                <div className="skeleton-title"></div>
+                <div className="skeleton-slider">
+                    <div className="skeleton-slider-track"></div>
+                    <div className="skeleton-slider-thumb"></div>
+                </div>
+                <div className="skeleton-text"></div>
+                <div className="skeleton-tags">
+                    {[...Array(5)].map((_, index) => (
+                        <div key={index} className="skeleton-tag"></div>
+                    ))}
+                </div>
+                <div className="skeleton-buttons">
+                    <div className="skeleton-button"></div>
+                    <div className="skeleton-button"></div>
+                </div>
+            </div>
+        ) : (
+            <>
+                <h2>Choose Your Budget</h2>
+                <input
+                    type="range"
+                    min="0"
+                    max="20000"
+                    value={budget}
+                    onChange={handleBudgetChange}
+                />
+                <p>Budget: Rs {budget}</p>
+                <div className="budget-tags">
+                    {priceRanges.map(range => (
+                        <span
+                            key={range.label}
+                            className="budget-tag"
+                            onClick={() => setBudget(range.max)}
+                        >
+                            {range.label}
+                        </span>
+                    ))}
+                </div>
+                <div className="popup-buttons">
+                    <button onClick={applyBudget}>Apply</button>
+                    <button onClick={() => setShowBudgetPopup(false)}>Browse All</button>
+                </div>
+            </>
+        )}
+    </div>
+)}
             <div className="page-header">
                 <button onClick={() => setSidebarVisible(!sidebarVisible)} className="menu-button">
                     ☰
@@ -202,9 +282,14 @@ const ProductPage = () => {
                                 </div>
                             ))}
                         </div>
+                        {displayedProducts.length < filteredProducts.length && (
+                            <button className="load-more-button" onClick={loadMore}>
+                                Load More
+                            </button>
+                        )}
                     </>
                 ) : (
-                    <div className="no-products">No products Found.</div>
+                    <div className="no-products">No products found.</div>
                 )}
             </div>
             <div className="page-footer">
