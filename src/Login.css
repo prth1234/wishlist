@@ -1,0 +1,49 @@
+.login-button {
+    width: 100%;
+    padding: 10px;
+    background-color: #000000;  /* Black background */
+    color: white;
+    border: none;
+    border-radius: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.login-button:hover {
+    background-color: #333333;  /* Slightly lighter black on hover */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);  /* Subtle shadow on hover */
+}
+
+.login-button.loading {
+    width: 50px;
+    height: 50px;
+    border-radius: 25px;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto;
+    background-color: #000000;  /* Maintain black background in loading state */
+}
+
+.spinner {
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top: 3px solid #ffffff;
+    width: 24px;
+    height: 24px;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.login-button:disabled {
+    opacity: 0.9;
+    cursor: not-allowed;
+    background-color: #000000;  /* Maintain black background when disabled */
+}
