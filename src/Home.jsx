@@ -1,20 +1,32 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Button } from 'primereact/button';
 import products from "./products.jsx";
-import { Check, X } from 'lucide-react';
+import { Check, User, X } from 'lucide-react';
 import './Home.css';
+import { IoIosLogOut } from "react-icons/io";
+import { LogOut } from 'lucide-react';
 
 const ProductPage = () => {
     const [sidebarVisible, setSidebarVisible] = useState(false);
-    const [filteredProducts, setFilteredProducts] = useState([]);   
+    const [filteredProducts, setFilteredProducts] = useState([]);
     const [displayedProducts, setDisplayedProducts] = useState([]);
-    const [selectedFilters, setSelectedFilters] = useState({ categories: [], priceRanges: [] });
+    const [selectedFilters, setSelectedFilters] = useState(() => {
+        const savedFilters = localStorage.getItem('selectedFilters');
+        return savedFilters ? JSON.parse(savedFilters) : { categories: [], priceRanges: [] };
+    });
     const [loading, setLoading] = useState(true);
     const [savedProducts, setSavedProducts] = useState([]);
     const [showingSaved, setShowingSaved] = useState(false);
     const [notification, setNotification] = useState(null);
-    const [showBudgetPopup, setShowBudgetPopup] = useState(true);
+    const [showBudgetPopup, setShowBudgetPopup] = useState(false);
     const [budget, setBudget] = useState(20000);
     const [isPopupLoading, setIsPopupLoading] = useState(true);
+    const navigate = useNavigate();
+
+    const handleLogout = () => {
+        navigate('/');
+    };
 
     const categories = ['Smartphones', 'Laptops', 'Headphones', 'TVs', 'Wearables'];
     const priceRanges = [
@@ -31,13 +43,21 @@ const ProductPage = () => {
         const showingSavedFromStorage = JSON.parse(localStorage.getItem('showingSaved') || 'false');
         setShowingSaved(showingSavedFromStorage);
 
-        // Simulate loading time for the popup
+        const hasSeenBudgetPopup = localStorage.getItem('hasSeenBudgetPopup');
+        if (!hasSeenBudgetPopup) {
+            setTimeout(() => {
+                setShowBudgetPopup(true);
+                setIsPopupLoading(false);
+            }, 1000);
+        }
+
         setTimeout(() => {
-            setIsPopupLoading(false);
+            setLoading(false);
         }, 1000);
     }, []);
 
     useEffect(() => {
+        localStorage.setItem('selectedFilters', JSON.stringify(selectedFilters));
         setLoading(true);
         let result = products;
         if (selectedFilters.categories.length > 0) {
@@ -127,79 +147,71 @@ const ProductPage = () => {
                 priceRanges: [selectedRange]
             }));
         }
-        setShowBudgetPopup(false);
+        closeBudgetPopup();
     };
 
     const closeBudgetPopup = () => {
         setShowBudgetPopup(false);
+        localStorage.setItem('hasSeenBudgetPopup', 'true');
     };
 
     return (
         <div className={`product-page ${sidebarVisible ? 'sidebar-open' : ''}`}>
             {notification && (
                 <div className="notification">
-                    <Check size={18} color="white"/>
+                    <Check size={18} color="white" />
                     <span>{notification}</span>
                 </div>
             )}
-{showBudgetPopup && (
-    <div className="budget-popup">
-        <button className={`close-popup ${isPopupLoading ? 'skeleton' : ''}`} onClick={closeBudgetPopup}>
-            {!isPopupLoading && <X size={24} />}
-        </button>
-        {isPopupLoading ? (
-            <div className="skeleton-content">
-                <div className="skeleton-title"></div>
-                <div className="skeleton-slider">
-                    <div className="skeleton-slider-track"></div>
-                    <div className="skeleton-slider-thumb"></div>
+            {showBudgetPopup && (
+                <div className={`budget-popup ${showBudgetPopup ? 'show' : ''}`}>
+                    <button className={`close-popup ${isPopupLoading ? 'skeleton' : ''}`} onClick={closeBudgetPopup}>
+                        {!isPopupLoading && <X size={24} />}
+                    </button>
+                    {isPopupLoading ? (
+                        <div className="skeleton-content">
+                            <div className="skeleton-title"></div>
+                            <div className="skeleton-slider"></div>
+                            <div className="skeleton-slider"></div>
+                            <div className="skeleton-slider"></div>
+                            <div className="skeleton-slider"></div>
+                        </div>
+                    ) : (
+                        <>
+                            <h2>Choose Your Budget</h2>
+                            <input
+                                type="range"
+                                min="0"
+                                max="20000"
+                                value={budget}
+                                onChange={handleBudgetChange}
+                            />
+                            <p style={{marginBottom:'10px', fontSize:'12px'}}>Budget: Rs {budget}</p>
+                            <div className="budget-tags">
+                                {priceRanges.map(range => (
+                                    <span
+                                        key={range.label}
+                                        className="budget-tag"
+                                        onClick={() => setBudget(range.max)}
+                                    >
+                                        {range.label}
+                                    </span>
+                                ))}
+                            </div>
+                            <div className="popup-buttons">
+                                <button onClick={applyBudget}>Apply</button>
+                                <button onClick={closeBudgetPopup}>Browse All</button>
+                            </div>
+                        </>
+                    )}
                 </div>
-                <div className="skeleton-text"></div>
-                <div className="skeleton-tags">
-                    {[...Array(5)].map((_, index) => (
-                        <div key={index} className="skeleton-tag"></div>
-                    ))}
-                </div>
-                <div className="skeleton-buttons">
-                    <div className="skeleton-button"></div>
-                    <div className="skeleton-button"></div>
-                </div>
-            </div>
-        ) : (
-            <>
-                <h2>Choose Your Budget</h2>
-                <input
-                    type="range"
-                    min="0"
-                    max="20000"
-                    value={budget}
-                    onChange={handleBudgetChange}
-                />
-                <p>Budget: Rs {budget}</p>
-                <div className="budget-tags">
-                    {priceRanges.map(range => (
-                        <span
-                            key={range.label}
-                            className="budget-tag"
-                            onClick={() => setBudget(range.max)}
-                        >
-                            {range.label}
-                        </span>
-                    ))}
-                </div>
-                <div className="popup-buttons">
-                    <button onClick={applyBudget}>Apply</button>
-                    <button onClick={() => setShowBudgetPopup(false)}>Browse All</button>
-                </div>
-            </>
-        )}
-    </div>
-)}
+            )}
             <div className="page-header">
                 <button onClick={() => setSidebarVisible(!sidebarVisible)} className="menu-button">
                     ☰
                 </button>
                 <h1>Prabhav's Wishlist</h1>
+
                 <div className="toggle-container">
                     <span className="toggle-label left">All</span>
                     <div className="toggle-switch">
@@ -217,9 +229,9 @@ const ProductPage = () => {
 
             <div className={`sidebar ${sidebarVisible ? 'visible' : ''}`}>
                 <button onClick={() => setSidebarVisible(false)} className="close-button">×</button>
-                <h2 style={{marginBottom: '10px', fontSize: '30px'}}>Filters</h2>
+                <h2 style={{ marginBottom: '10px', fontSize: '30px' }}>Filters</h2>
                 <div className="filter-section">
-                    <h3 style={{fontSize: '15px'}}>Categories</h3>
+                    <h3 style={{ fontSize: '15px' }}>Categories</h3>
                     <div className="filter-tags">
                         {categories.map(category => (
                             <span
@@ -233,7 +245,7 @@ const ProductPage = () => {
                     </div>
                 </div>
                 <div className="filter-section">
-                    <h3 style={{fontSize: '15px'}}>Price Ranges</h3>
+                    <h3 style={{ fontSize: '15px' }}>Price Ranges</h3>
                     <div className="filter-tags">
                         {priceRanges.map(range => (
                             <span
@@ -264,10 +276,10 @@ const ProductPage = () => {
                                 <div key={index} className="card-container">
                                     <div className="card">
                                         <div className="image">
-                                            <img src={product.image} alt={product.name}/>
+                                            <img src={product.image} alt={product.name} />
                                         </div>
                                         <span className="title">{product.name}</span>
-                                        <span className="price">{product.price}</span>
+                                        <span className="price">Rs. {product.price}</span>
                                         {isProductSaved(product) && (
                                             <div className="saved-indicator">
                                             </div>
@@ -282,7 +294,7 @@ const ProductPage = () => {
                                 </div>
                             ))}
                         </div>
-                        {displayedProducts.length < filteredProducts.length && (
+                        {!showingSaved && displayedProducts.length < filteredProducts.length && (
                             <button className="load-more-button" onClick={loadMore}>
                                 Load More
                             </button>
