@@ -111,7 +111,7 @@ body {
 .card-container {
     position: relative;
     width: 100%;
-    height: 300px;
+    height: 200px;
     margin-bottom: 20px;
     overflow: hidden;
 }
@@ -120,30 +120,19 @@ body {
     width: 100%;
     height: 100%;
     box-shadow: 0px 1px 13px rgba(0,0,0,0.1);
-    background: white;
+    background: rgb(248, 248, 248);
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
     box-sizing: border-box;
 }
+
 .card:hover .save-button {
     bottom: 0; /* Slide up on hover */
-}
-.card .title {
-    font-size: 14px;
-    font-weight: 400;
-    color: black;
-}
-
-.card .price {
-    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
-    font-size: 14px;
-    color: black;
 }
 
 .card .image {
     width: 100%;
-    height: 100%;
+    height: 70%; /* Adjusted height to leave space for content */
     overflow: hidden;
 }
 
@@ -152,74 +141,85 @@ body {
     height: 100%;
     object-fit: cover;
 }
-.card .title {
-    font-size: 16px;
-    font-weight: 600;
-    color: black;
-    margin-top: 10px;
+
+.card-content {
+    padding: 12px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    height: 30%; /* Takes remaining space */
 }
 
-.card .price {
-    font-family: 'MyCustomFont';
-    font-size: 18px;
+.card .title {
+    font-size: 14px;
+    font-weight: 600;
     color: black;
-    margin-bottom: 10px;
+    margin: 0;
+    text-align: left;
 }
 
 .card .category {
-    font-size: 14px;
+    font-size: 12px;
     color: #666;
-    margin-bottom: 5px;
+    margin: 0;
+    text-align: left;
 }
 
-
-.card .title, .card .price {
-    padding: 0 20px;
+.card .price {
+    font-family: 'MyCustomFont', Impact, sans-serif;
+    font-size: 16px;
+    color: black;
+    margin: 0;
+    text-align: left;
+    font-weight: 500;
 }
-
 
 .saved-indicator {
     position: absolute;
-    top: 10px;
-    right: 10px;
-    background-color: black;
+    top: 12px;
+    right: 12px;
+    background: linear-gradient(135deg, #6366f1, #a855f7);
     color: white;
-    border-radius: 20px;
+    border-radius: 50%;
     display: flex;
     justify-content: center;
     align-items: center;
     z-index: 2;
-    font-weight: bold;
-    padding: 5px 10px;
-    font-size: 12px;
-    box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.7);
+    width: 16px; /* Increased size for visibility */
+    height: 16px;
+    font-size: 10px; /* Adjust font size for better fit if there's text */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Stronger shadow for depth */
     transform: scale(1);
     animation: pulse 2s infinite;
+    transition: transform 0.3s ease;
+}
+
+.saved-indicator:hover {
+    transform: scale(1.1);
 }
 
 @keyframes pulse {
-    0% {
-        transform: scale(0.95);
-        box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.7);
-    }
-
-    70% {
+    0%, 100% {
         transform: scale(1);
-        box-shadow: 0 0 0 10px rgba(0, 0, 0, 0);
+        opacity: 1;
     }
-
-    100% {
-        transform: scale(0.95);
-        box-shadow: 0 0 0 0 rgba(0, 0, 0, 0);
+    50% {
+        transform: scale(1.2);
+        opacity: 0.8;
     }
 }
 
-/* Remove this if it exists in your current CSS */
-.saved-indicator::after {
-    content: '✓ Saved';
-    color: white;
-    font-size: 15px;
+.saved-indicator:hover {
+    transform: scale(1.1);
 }
+
+.saved-indicator svg {
+    width: 14px;
+    height: 14px;
+}
+
+
+
 
 .text {
     max-width: 55px;
@@ -268,7 +268,7 @@ body {
     background-color: black;
     border-radius: 50%;
     margin: 0 5px;
-    animation: bounce 0.5s ease-in-out infinite;
+    animation: bounce 1s ease-in-out infinite;
 }
 
 .loader .dot:nth-child(2) {
@@ -424,8 +424,8 @@ body {
     bottom: -40px;
     left: 0;
     width: 100%;
-    background-color: black;
-    color: white;
+    background-color: #e9e9e9;
+    color: black;
     text-align: center;
     padding: 10px 0;
     transition: bottom 0.3s ease;
@@ -435,7 +435,8 @@ body {
 
 
 .save-banner:hover {
-    background-color: black;
+    background-color: #e9e9e9;
+    color: black;
 }
 
 /* Enhanced Budget Popup Styles */
@@ -638,4 +639,553 @@ body {
     width: 24px;
     height: 24px;
     border-radius: 50%;
+}
+
+/* From Uiverse.io by sabbircoder07 */ 
+.progress {
+    background-color: #000000;
+    width: 120px;
+    height: 20px;
+    margin-right: 100px;
+    border-radius: 100px;
+    overflow: hidden;
+    backface-visibility: hidden;
+    right:100px;
+    opacity: 70%;
+  }
+  
+  .inner {
+    background-image: linear-gradient(to left, #00cdac, #00c2c9, #00b4e3, #00a2f1, #008cef, #0088eb, #0085e6, #0081e2, #0090de, #009bd2, #00a3c1, #02aab0);
+    height: 100%;
+    transform-origin: left;
+    animation: progress 2s infinite;
+  }
+  
+
+  /* Add these styles to your Home.css file */
+
+.image-container {
+    position: relative;
+    width: 100%;
+    height: 200px; /* Adjust based on your needs */
+    background: #f5f5f5;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.image-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.image-error .error-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.glassmorphism-error {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
+}
+
+.error-icon {
+    margin-bottom: 8px;
+    filter: drop-shadow(0 0 8px rgba(255, 215, 0, 0.3));
+}
+
+.error-text {
+    color: #666;
+    font-size: 14px;
+    text-align: center;
+    font-weight: 500;
+}
+
+/* Update existing card styles to accommodate the new image container */
+.card .image {
+    width: 100%;
+    height: 200px; /* Match the image-container height */
+    margin-bottom: 12px;
+}
+
+
+  @keyframes progress {
+    0% {
+      transform: scaleX(10%) translateX(-10%);
+    }
+  
+    100% {
+      transform: scaleX(80%) translateX(150%);
+    }
+  }
+
+  /* From Uiverse.io by Pradeepsaranbishnoi */ 
+:focus {
+    outline: 0;
+    border-color: #2260ff;
+    box-shadow: 0 0 0 4px #b5c9fc;
+  }
+  
+  .mydict div {
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: 0.5rem;
+    justify-content: center;
+  }
+  
+  .mydict input[type="radio"] {
+    clip: rect(0 0 0 0);
+    clip-path: inset(100%);
+    height: 1px;
+    overflow: hidden;
+    position: absolute;
+    white-space: nowrap;
+    width: 1px;
+  }
+  
+  .mydict input[type="radio"]:checked + span {
+    box-shadow: 0 0 0 0.0625em #0043ed;
+    background-color: #dee7ff;
+    z-index: 1;
+    color: #0043ed;
+  }
+  
+  label span {
+    display: block;
+    cursor: pointer;
+    background-color: #fff;
+    padding: 0.375em .75em;
+    position: relative;
+    margin-left: .0625em;
+    box-shadow: 0 0 0 0.0625em #b5bfd9;
+    letter-spacing: .05em;
+    color: #3e4963;
+    text-align: center;
+    transition: background-color .5s ease;
+  }
+  
+  label:first-child span {
+    border-radius: .375em 0 0 .375em;
+  }
+  
+  label:last-child span {
+    border-radius: 0 .375em .375em 0;
+  }
+  
+/* Remove existing save-banner styles and replace with new toggle styles */
+.save-toggle {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    width: 40px;
+    height: 40px;
+    background: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    z-index: 2;
+}
+
+.save-toggle:hover {
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.save-toggle::before {
+    content: '♡';
+    font-size: 24px;
+    color: #333;
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+                color 0.3s ease;
+}
+
+.save-toggle.saved::before {
+    content: '♥';
+    color: #ff4646;
+    animation: heartPop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes heartPop {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.4);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+/* Add a ripple effect when toggling */
+.save-toggle::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: rgba(255, 70, 70, 0.2);
+    opacity: 0;
+    transform: scale(0.5);
+    pointer-events: none;
+}
+
+.save-toggle.saved::after {
+    animation: ripple 0.6s ease-out;
+}
+
+@keyframes ripple {
+    0% {
+        transform: scale(0.5);
+        opacity: 0.5;
+    }
+    100% {
+        transform: scale(2);
+        opacity: 0;
+    }
+}
+
+/* Optional saved label that appears briefly */
+.save-label {
+    position: absolute;
+    bottom: 60px;
+    right: 10px;
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    opacity: 0;
+    transform: translateY(10px);
+    pointer-events: none;
+}
+
+.save-toggle.saved + .save-label {
+    animation: labelPop 1s forwards;
+}
+
+@keyframes labelPop {
+    0% {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    20% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    80% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+}
+.product-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.card-container {
+    position: relative;
+    width: 100%;
+    height: 300px;
+    margin-bottom: 20px;
+    overflow: hidden;
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeInUp 0.6s ease forwards;
+}
+
+/* Create different delays for each card */
+.card-container:nth-child(1) { animation-delay: 0.1s; }
+.card-container:nth-child(2) { animation-delay: 0.2s; }
+.card-container:nth-child(3) { animation-delay: 0.3s; }
+.card-container:nth-child(4) { animation-delay: 0.4s; }
+.card-container:nth-child(5) { animation-delay: 0.5s; }
+.card-container:nth-child(6) { animation-delay: 0.6s; }
+.card-container:nth-child(7) { animation-delay: 0.7s; }
+.card-container:nth-child(8) { animation-delay: 0.8s; }
+.card-container:nth-child(9) { animation-delay: 0.9s; }
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px) scale(0.98);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* Add a subtle hover animation */
+.card {
+    width: 100%;
+    height: 100%;
+    box-shadow: 0px 1px 13px rgba(0,0,0,0.1);
+    background: white;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0px 5px 20px rgba(0,0,0,0.15);
+}
+
+/* Add a smooth transition for the load more button */
+.load-more-button {
+    display: block;
+    margin: 20px auto;
+    padding: 10px 20px;
+    background-color: black;
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeInButton 0.6s ease forwards 1s;
+}
+
+@keyframes fadeInButton {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.load-more-button:hover {
+    background-color: #333;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+/* Pin Animation Styles from Uiverse.io by vinodjangid07 */
+.container input {
+    display: none;
+  }
+  
+  .pin {
+    width: 10px;
+    height: auto;
+    transform: rotate(35deg);
+  }
+  
+  .container {
+    width: 30px;
+    height: 30px;
+    background-color: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border-radius: 10px;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 2;
+  }
+  
+  .container input:checked ~ .pin {
+    fill: rgb(179, 139, 255);
+    stroke: white;
+  }
+  
+  .container input:checked ~ .pin line {
+    stroke: rgb(179, 139, 255);
+  }
+  
+  .container input:checked ~ .pin path {
+    stroke: rgb(179, 139, 255);
+  }
+  
+  .container:hover {
+    background-color: rgb(244, 238, 255);
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.041);
+  }
+  
+  .container:active {
+    transform: scale(0.9);
+  }
+  
+  /* Make sure image container is relative for absolute positioning of pin */
+  .card .image {
+    position: relative;
+    overflow: visible;
+  }
+
+  /* Add these styles to your existing CSS file */
+
+.skeleton {
+    background: #f0f0f0;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.skeleton-image {
+    width: 100%;
+    height: 200px;
+    background: #e0e0e0;
+}
+
+.skeleton-content {
+    padding: 16px;
+}
+
+.skeleton-title {
+    height: 20px;
+    background: #e0e0e0;
+    margin-bottom: 8px;
+    width: 80%;
+    border-radius: 4px;
+}
+
+.skeleton-price {
+    height: 16px;
+    background: #e0e0e0;
+    width: 40%;
+    border-radius: 4px;
+}
+
+@keyframes pulse {
+    0% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+.pulse {
+    animation: pulse 1.5s ease-in-out infinite;
+}
+
+.card-container {
+    transition: transform 0.3s ease;
+}
+
+.card {
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.product-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 24px;
+    padding: 24px;
+}
+
+/* Add these styles to your existing CSS file */
+
+.skeleton {
+    background: #f0f0f0;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.skeleton-image {
+    width: 100%;
+    height: 200px;
+    background: #e0e0e0;
+}
+
+.skeleton-content {
+    padding: 16px;
+}
+
+.skeleton-title {
+    height: 20px;
+    background: #e0e0e0;
+    margin-bottom: 8px;
+    width: 80%;
+    border-radius: 4px;
+}
+
+.skeleton-price {
+    height: 16px;
+    background: #e0e0e0;
+    width: 40%;
+    border-radius: 4px;
+}
+
+@keyframes pulse {
+    0% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+.pulse {
+    animation: pulse 1.5s ease-in-out infinite;
+}
+
+.card-container {
+    transition: transform 0.3s ease;
+}
+
+.card {
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.product-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 24px;
+    padding: 24px;
+}
+
+/* Add fade transition for view switching */
+.product-grid {
+    opacity: 1;
+    transition: opacity 0.3s ease-in-out;
+}
+
+.product-grid.loading {
+    opacity: 0.7;
 }

@@ -2,10 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from 'primereact/button';
 import products from "./products.jsx";
-import { Check, User, X } from 'lucide-react';
 import './Home.css';
 import { IoIosLogOut } from "react-icons/io";
 import { LogOut } from 'lucide-react';
+import { Check, User, X, AlertTriangle } from 'lucide-react';
 
 const ProductPage = () => {
     const [sidebarVisible, setSidebarVisible] = useState(false);
@@ -16,6 +16,7 @@ const ProductPage = () => {
         return savedFilters ? JSON.parse(savedFilters) : { categories: [], priceRanges: [] };
     });
     const [loading, setLoading] = useState(true);
+    const [viewTransitionLoading, setViewTransitionLoading] = useState(false);
     const [savedProducts, setSavedProducts] = useState([]);
     const [showingSaved, setShowingSaved] = useState(false);
     const [notification, setNotification] = useState(null);
@@ -28,12 +29,24 @@ const ProductPage = () => {
         navigate('/');
     };
 
+    const SkeletonCard = () => (
+        <div className="card-container">
+            <div className="card skeleton">
+                <div className="image skeleton-image pulse"></div>
+                <div className="skeleton-content">
+                    <div className="skeleton-title pulse"></div>
+                    <div className="skeleton-price pulse"></div>
+                </div>
+            </div>
+        </div>
+    );
+
     const categories = ['Smartphones', 'Laptops', 'Headphones', 'TVs', 'Wearables'];
     const priceRanges = [
         { label: 'Under 1K', min: 0, max: 1000 },
-        { label: 'Under 5k', min: 1001, max: 5000 },
-        { label: 'Under 10k', min: 5001, max: 10000 },
-        { label: 'Under 20k', min: 10001, max: 20000 },
+        { label: '1k-5k', min: 1001, max: 5000 },
+        { label: '5k-10k', min: 5001, max: 10000 },
+        { label: 'U10k-20k', min: 10001, max: 20000 },
         { label: 'More than 20k', min: 20001, max: Infinity },
     ];
 
@@ -48,18 +61,29 @@ const ProductPage = () => {
             setTimeout(() => {
                 setShowBudgetPopup(true);
                 setIsPopupLoading(false);
-            }, 1000);
+            }, 2000);
         }
 
+        applyFilters(products, showingSavedFromStorage, savedProductsFromStorage);
+        
         setTimeout(() => {
             setLoading(false);
-        }, 1000);
+        }, 2000);
     }, []);
 
     useEffect(() => {
         localStorage.setItem('selectedFilters', JSON.stringify(selectedFilters));
-        setLoading(true);
-        let result = products;
+        if (!loading) {
+            setLoading(true);
+            setTimeout(() => {
+                applyFilters(products, showingSaved, savedProducts);
+                setLoading(false);
+            }, 1000);
+        }
+    }, [selectedFilters]);
+
+    const applyFilters = (sourceProducts, isShowingSaved, currentSavedProducts) => {
+        let result = sourceProducts;
         if (selectedFilters.categories.length > 0) {
             result = result.filter(product => selectedFilters.categories.includes(product.category));
         }
@@ -69,12 +93,9 @@ const ProductPage = () => {
                 return selectedFilters.priceRanges.some(range => price >= range.min && price <= range.max);
             });
         }
-        setTimeout(() => {
-            setFilteredProducts(result);
-            setDisplayedProducts(showingSaved ? savedProducts : result.slice(0, 9));
-            setLoading(false);
-        }, 1000);
-    }, [selectedFilters, showingSaved, savedProducts]);
+        setFilteredProducts(result);
+        setDisplayedProducts(isShowingSaved ? currentSavedProducts : result.slice(0, 9));
+    };
 
     const toggleFilter = (type, value) => {
         setSelectedFilters(prev => {
@@ -95,6 +116,29 @@ const ProductPage = () => {
         const currentLength = displayedProducts.length;
         const nextBatch = filteredProducts.slice(currentLength, currentLength + 9);
         setDisplayedProducts([...displayedProducts, ...nextBatch]);
+    };
+
+    const ImageWithFallback = ({ src, alt, className }) => {
+        const [hasError, setHasError] = useState(false);
+    
+        return (
+            <div className={`image-container ${hasError ? 'image-error' : ''}`}>
+                {hasError ? (
+                    <div className="error-container">
+                        <div className="glassmorphism-error">
+                            <AlertTriangle className="error-icon" size={32} color="#FFD700" />
+                        </div>
+                    </div>
+                ) : (
+                    <img
+                        src={src}
+                        alt={alt}
+                        className={className}
+                        onError={() => setHasError(true)}
+                    />
+                )}
+            </div>
+        );
     };
 
     const toggleSaveProduct = (product) => {
@@ -119,17 +163,66 @@ const ProductPage = () => {
         setNotification(message);
         setTimeout(() => setNotification(null), 3000);
     };
-
     const toggleSavedProducts = () => {
+        setViewTransitionLoading(true);
         const newShowingSaved = !showingSaved;
         setShowingSaved(newShowingSaved);
         localStorage.setItem('showingSaved', JSON.stringify(newShowingSaved));
-        if (newShowingSaved) {
-            setDisplayedProducts(savedProducts);
-        } else {
-            setDisplayedProducts(filteredProducts.slice(0, 9));
-        }
+        
+        // Simulate loading delay for smooth transition
+        setTimeout(() => {
+            if (newShowingSaved) {
+                setDisplayedProducts(savedProducts);
+            } else {
+                setDisplayedProducts(filteredProducts.slice(0, 9));
+            }
+            setViewTransitionLoading(false);
+        }, 500);
     };
+    const ProductCard = ({ product }) => (
+        <div className="card-container">
+            <div className="card">
+                <div className="image">
+                    <ImageWithFallback
+                        src={product.image}
+                        alt={product.name}
+                        className="product-image"
+                    />
+                    <label className="container">
+                        <input
+                            type="checkbox"
+                            checked={isProductSaved(product)}
+                            onChange={() => toggleSaveProduct(product)}
+                        />
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="black"
+                            viewBox="0 0 75 100"
+                            className="pin"
+                        >
+                            <line
+                                strokeWidth="12"
+                                stroke="black"
+                                y2="100"
+                                x2="37"
+                                y1="64"
+                                x1="37"
+                            ></line>
+                            <path
+                                strokeWidth="7"
+                                stroke="black"
+                                d="M16.5 36V4.5H58.5V36V53.75V54.9752L59.1862 55.9903L66.9674 67.5H8.03256L15.8138 55.9903L16.5 54.9752V53.75V36Z"
+                            ></path>
+                        </svg>
+                    </label>
+                </div>
+                <span className="title" style={{fontFamily:'Arial'}}>{product.name}</span>
+                <span className="price" style={{fontFamily:'Arial', fontSize:'12px'}}>Rs. {product.price}</span>
+            </div>
+        </div>
+    );
+
+
 
     const isProductSaved = (product) => {
         return savedProducts.some(p => p.name === product.name);
@@ -157,12 +250,13 @@ const ProductPage = () => {
 
     return (
         <div className={`product-page ${sidebarVisible ? 'sidebar-open' : ''}`}>
-            {notification && (
+         {notification && (
                 <div className="notification">
                     <Check size={18} color="white" />
                     <span>{notification}</span>
                 </div>
             )}
+            
             {showBudgetPopup && (
                 <div className={`budget-popup ${showBudgetPopup ? 'show' : ''}`}>
                     <button className={`close-popup ${isPopupLoading ? 'skeleton' : ''}`} onClick={closeBudgetPopup}>
@@ -206,27 +300,34 @@ const ProductPage = () => {
                     )}
                 </div>
             )}
-            <div className="page-header">
-                <button onClick={() => setSidebarVisible(!sidebarVisible)} className="menu-button">
-                    ☰
-                </button>
-                <h1>Prabhav's Wishlist</h1>
-
-                <div className="toggle-container">
-                    <span className="toggle-label left">All</span>
-                    <div className="toggle-switch">
-                        <input
-                            type="checkbox"
-                            id="saved-products-toggle"
-                            checked={showingSaved}
-                            onChange={toggleSavedProducts}
-                        />
-                        <label htmlFor="saved-products-toggle"></label>
-                    </div>
-                    <span className="toggle-label right">Saved</span>
-                </div>
-            </div>
-
+      <div className="page-header">                 
+    <button onClick={() => setSidebarVisible(!sidebarVisible)} className="menu-button">                     
+        ☰                 
+    </button>                 
+    <img src="https://i.ibb.co/JzqDbzH/logo.png" alt="Wishlist Logo" style={{height: '35px'}} />                  
+    <div className="mydict">                     
+        <div>                         
+            <label>                             
+                <input                                 
+                    type="radio"                                 
+                    name="view-toggle"                                 
+                    checked={!showingSaved}                                 
+                    onChange={toggleSavedProducts}                             
+                />                             
+                <span>All</span>                         
+            </label>                         
+            <label>                             
+                <input                                 
+                    type="radio"                                 
+                    name="view-toggle"                                 
+                    checked={showingSaved}                                 
+                    onChange={toggleSavedProducts}                             
+                />                             
+                <span>Saved</span>                         
+            </label>                     
+        </div>                 
+    </div>             
+</div>
             <div className={`sidebar ${sidebarVisible ? 'visible' : ''}`}>
                 <button onClick={() => setSidebarVisible(false)} className="close-button">×</button>
                 <h2 style={{ marginBottom: '10px', fontSize: '30px' }}>Filters</h2>
@@ -262,12 +363,10 @@ const ProductPage = () => {
 
             <div className="main-content">
                 {loading ? (
-                    <div className="loader-container">
-                        <div className="loader">
-                            <div className="dot"></div>
-                            <div className="dot"></div>
-                            <div className="dot"></div>
-                        </div>
+                    <div className="product-grid">
+                        {[...Array(9)].map((_, index) => (
+                            <SkeletonCard key={index} />
+                        ))}
                     </div>
                 ) : displayedProducts.length > 0 ? (
                     <>
@@ -276,20 +375,41 @@ const ProductPage = () => {
                                 <div key={index} className="card-container">
                                     <div className="card">
                                         <div className="image">
-                                            <img src={product.image} alt={product.name} />
+                                            <ImageWithFallback
+                                                src={product.image}
+                                                alt={product.name}
+                                                className="product-image"
+                                            />
+                                            <label className="container">
+                                                <input
+                                                    type="checkbox"
+                                                    checked={isProductSaved(product)}
+                                                    onChange={() => toggleSaveProduct(product)}
+                                                />
+                                                <svg
+                                                    xmlns="http://www.w3.org/2000/svg"
+                                                    fill="black"
+                                                    viewBox="0 0 75 100"
+                                                    className="pin"
+                                                >
+                                                    <line
+                                                        strokeWidth="12"
+                                                        stroke="black"
+                                                        y2="100"
+                                                        x2="37"
+                                                        y1="64"
+                                                        x1="37"
+                                                    ></line>
+                                                    <path
+                                                        strokeWidth="7"
+                                                        stroke="black"
+                                                        d="M16.5 36V4.5H58.5V36V53.75V54.9752L59.1862 55.9903L66.9674 67.5H8.03256L15.8138 55.9903L16.5 54.9752V53.75V36Z"
+                                                    ></path>
+                                                </svg>
+                                            </label>
                                         </div>
-                                        <span className="title">{product.name}</span>
-                                        <span className="price">Rs. {product.price}</span>
-                                        {isProductSaved(product) && (
-                                            <div className="saved-indicator">
-                                            </div>
-                                        )}
-                                    </div>
-                                    <div
-                                        className="save-banner"
-                                        onClick={() => toggleSaveProduct(product)}
-                                    >
-                                        {isProductSaved(product) ? 'Unsave' : 'Save'}
+                                        <span className="title" style={{fontFamily:'Arial'}}>{product.name}</span>
+                                        <span className="price" style={{fontFamily:'Arial', fontSize:'12px'}}>Rs. {product.price}</span>
                                     </div>
                                 </div>
                             ))}
