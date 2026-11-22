@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 256" width="900" height="256" role="img" aria-label="Parth's Wishlist">
+  <defs>
+    <linearGradient id="wl-hero-bar" x1="0" x2="1">
+      <stop class="g1" offset="0"/>
+      <stop class="g2" offset="0.5"/>
+      <stop class="g3" offset="1"/>
+    </linearGradient>
+  </defs>
+  <style>
+  text { font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Arial, sans-serif; }
+  .mono { font-family: Menlo, Consolas, Monaco, ui-monospace, monospace; }
+  .fg { fill: #F8FAFC; }
+  .mut { fill: #94A3B8; }
+  .bd { fill: none; stroke: #F8FAFC; stroke-opacity: 0.22; stroke-width: 1.3; }
+  .ind { fill: #818CF8; }
+  .ind-s { stroke: #818CF8; }
+  .purp { fill: #C084FC; }
+  .purp-s { stroke: #C084FC; }
+  .cobalt { fill: #60A5FA; }
+  .cobalt-s { stroke: #60A5FA; }
+  .teal { fill: #2DD4BF; }
+  .teal-s { stroke: #2DD4BF; }
+  .g1 { stop-color: #6366F1; }
+  .g2 { stop-color: #A855F7; }
+  .g3 { stop-color: #00CDAC; }
+  @media (prefers-color-scheme: light) {
+    .fg { fill: #000000; }
+    .mut { fill: #555555; }
+    .bd { stroke: #000000; stroke-opacity: 0.2; }
+    .ind { fill: #4F46E5; }
+    .ind-s { stroke: #4F46E5; }
+    .purp { fill: #9333EA; }
+    .purp-s { stroke: #9333EA; }
+    .cobalt { fill: #0043ED; }
+    .cobalt-s { stroke: #0043ED; }
+    .teal { fill: #0D9488; }
+    .teal-s { stroke: #0D9488; }
+  }
+  
+  .bar-pulse { animation: wl-bp 4s ease-in-out infinite; }
+  @keyframes wl-bp { 0%, 100% { opacity: 0.55; } 50% { opacity: 1; } }
+  
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+  }
+</style>
+  <text x="450" y="92" text-anchor="middle" font-size="54" font-weight="700" letter-spacing="-1.6" class="fg">Parth's Wishlist</text>
+  <text x="450" y="130" text-anchor="middle" font-size="18" class="mut">Curated tech catalog with budget filtering and saved items</text>
+  <rect x="200" y="152" width="500" height="3" rx="1.5" fill="url(#wl-hero-bar)" class="bar-pulse"/>
+  <rect x="180" y="192" width="118" height="34" rx="16" class="bd"/>
+  <text x="239" y="214" text-anchor="middle" font-size="13" font-weight="600" class="fg">React 18</text>
+  <rect x="312" y="192" width="106" height="34" rx="16" fill="none" class="ind-s" stroke-width="1.3"/>
+  <text x="365" y="214" text-anchor="middle" font-size="13" font-weight="600" class="ind">Vite 5</text>
+  <rect x="432" y="192" width="132" height="34" rx="16" fill="none" class="purp-s" stroke-width="1.3"/>
+  <text x="498" y="214" text-anchor="middle" font-size="13" font-weight="600" class="purp">PrimeReact</text>
+  <rect x="578" y="192" width="142" height="34" rx="16" fill="none" class="teal-s" stroke-width="1.3"/>
+  <text x="649" y="214" text-anchor="middle" font-size="13" font-weight="600" class="teal">React Router</text>
+</svg>
