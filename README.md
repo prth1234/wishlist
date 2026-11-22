@@ -52,7 +52,10 @@ npm run preview
 npm run lint
 ```
 
-## Project Structure
+<details>
+<summary><b>Project Structure</b></summary>
+
+<br/>
 
 ```text
 wishlist/
@@ -67,6 +70,8 @@ wishlist/
     ├── NotFound.jsx    # 404 page
     └── *.css           # Component and responsive stylesheets
 ```
+
+</details>
 
 <div align="center">
   <img src="docs/assets/footer.svg" alt="Filter by budget. Save what matters." width="100%" />
