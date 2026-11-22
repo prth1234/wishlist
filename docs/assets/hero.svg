@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 256" width="900" height="256" role="img" aria-label="Parth's Wishlist">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 282" width="900" height="282" role="img" aria-label="Parth's Wishlist">
   <defs>
     <linearGradient id="wl-hero-bar" x1="0" x2="1">
       <stop class="g1" offset="0"/>
@@ -36,23 +36,73 @@
     .teal { fill: #0D9488; }
     .teal-s { stroke: #0D9488; }
   }
-  
-  .bar-pulse { animation: wl-bp 4s ease-in-out infinite; }
-  @keyframes wl-bp { 0%, 100% { opacity: 0.55; } 50% { opacity: 1; } }
-  
+
+  .dot-ping { animation: wl-ping 2.2s ease-out infinite; transform-origin: 332px 34px; }
+  @keyframes wl-ping {
+    0% { r: 4; opacity: 0.9; }
+    70% { r: 10; opacity: 0; }
+    100% { r: 10; opacity: 0; }
+  }
+  .cur { animation: wl-cur 1.1s steps(2, start) infinite; }
+  @keyframes wl-cur { to { opacity: 0; } }
+
+  .tl { opacity: 0; animation: wl-tl 9.6s infinite both; }
+  @keyframes wl-tl {
+    0% { opacity: 0; transform: translateY(5px); }
+    6% { opacity: 1; transform: translateY(0); }
+    28% { opacity: 1; transform: translateY(0); }
+    34% { opacity: 0; transform: translateY(-5px); }
+    100% { opacity: 0; }
+  }
+
+  .trace { stroke-dasharray: 10 7; animation: wl-tr 2.5s linear infinite; }
+  @keyframes wl-tr { to { stroke-dashoffset: -34; } }
+
+  .pill { animation: wl-pill 4s ease-in-out infinite; }
+  @keyframes wl-pill {
+    0%, 100% { stroke-opacity: 0.35; stroke-width: 1.3; }
+    20% { stroke-opacity: 1; stroke-width: 2.2; }
+    45% { stroke-opacity: 0.35; stroke-width: 1.3; }
+  }
+
   @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after { animation: none !important; transition: none !important; }
+    .tl-first { opacity: 1 !important; }
   }
 </style>
-  <text x="450" y="92" text-anchor="middle" font-size="54" font-weight="700" letter-spacing="-1.6" class="fg">Parth's Wishlist</text>
-  <text x="450" y="130" text-anchor="middle" font-size="18" class="mut">Curated tech catalog with budget filtering and saved items</text>
-  <rect x="200" y="152" width="500" height="3" rx="1.5" fill="url(#wl-hero-bar)" class="bar-pulse"/>
-  <rect x="180" y="192" width="118" height="34" rx="16" class="bd"/>
-  <text x="239" y="214" text-anchor="middle" font-size="13" font-weight="600" class="fg">React 18</text>
-  <rect x="312" y="192" width="106" height="34" rx="16" fill="none" class="ind-s" stroke-width="1.3"/>
-  <text x="365" y="214" text-anchor="middle" font-size="13" font-weight="600" class="ind">Vite 5</text>
-  <rect x="432" y="192" width="132" height="34" rx="16" fill="none" class="purp-s" stroke-width="1.3"/>
-  <text x="498" y="214" text-anchor="middle" font-size="13" font-weight="600" class="purp">PrimeReact</text>
-  <rect x="578" y="192" width="142" height="34" rx="16" fill="none" class="teal-s" stroke-width="1.3"/>
-  <text x="649" y="214" text-anchor="middle" font-size="13" font-weight="600" class="teal">React Router</text>
+
+  <!-- Live Status Header -->
+  <circle cx="332" cy="34" r="4" class="teal"/>
+  <circle cx="332" cy="34" r="4" fill="none" class="teal-s dot-ping" stroke-width="1.5"/>
+  <text x="346" y="39" font-size="13" font-weight="600" letter-spacing="2" class="mono ind">READY // WISHLIST APP</text>
+  <text x="556" y="39" font-size="14" font-weight="700" class="mono teal cur">_</text>
+
+  <!-- Title -->
+  <text x="450" y="100" text-anchor="middle" font-size="54" font-weight="700" letter-spacing="-1.6" class="fg">Parth's Wishlist</text>
+
+  <!-- Cycling Taglines -->
+  <text x="450" y="138" text-anchor="middle" font-size="17.5" class="mut tl tl-first" style="animation-delay:0s">Curated tech catalog with budget filtering &amp; saved items</text>
+  <text x="450" y="138" text-anchor="middle" font-size="17.5" class="ind tl" style="animation-delay:3.2s">Interactive budget modal with range slider &amp; quick presets</text>
+  <text x="450" y="138" text-anchor="middle" font-size="17.5" class="teal tl" style="animation-delay:6.4s">Paginated 9-item grid with localStorage persistence</text>
+
+  <!-- Animated Gradient Trace + Travelling Signal Dot -->
+  <path id="wl-hero-trace" d="M 200 174 L 700 174" fill="none" stroke="url(#wl-hero-bar)" class="trace" stroke-width="2.4" stroke-linecap="round"/>
+  <circle r="4.5" class="teal">
+    <animateMotion dur="3.6s" repeatCount="indefinite">
+      <mpath href="#wl-hero-trace"/>
+    </animateMotion>
+  </circle>
+
+  <!-- Sequential Highlight Pills -->
+  <rect x="180" y="216" width="118" height="34" rx="16" fill="none" class="cobalt-s pill" style="animation-delay:0s"/>
+  <text x="239" y="238" text-anchor="middle" font-size="13" font-weight="600" class="cobalt">React 18</text>
+
+  <rect x="312" y="216" width="106" height="34" rx="16" fill="none" class="ind-s pill" style="animation-delay:1s"/>
+  <text x="365" y="238" text-anchor="middle" font-size="13" font-weight="600" class="ind">Vite 5</text>
+
+  <rect x="432" y="216" width="132" height="34" rx="16" fill="none" class="purp-s pill" style="animation-delay:2s"/>
+  <text x="498" y="238" text-anchor="middle" font-size="13" font-weight="600" class="purp">PrimeReact</text>
+
+  <rect x="578" y="216" width="142" height="34" rx="16" fill="none" class="teal-s pill" style="animation-delay:3s"/>
+  <text x="649" y="238" text-anchor="middle" font-size="13" font-weight="600" class="teal">React Router</text>
 </svg>
